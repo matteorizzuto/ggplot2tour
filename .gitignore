@@ -2,3 +2,12 @@
 .Rhistory
 .RData
 .Ruserdata
+
+images/
+ggplot2tour_files/
+ggplot2tour.Rmd_files/
+renv/
+
+*.DS_Store
+*.lock
+*.css

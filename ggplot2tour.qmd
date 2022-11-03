@@ -1,0 +1,834 @@
+---
+title: "ggplot2"
+subtitle: "Navigating the Grammar of Graphics"
+author: "Matteo Rizzuto, Ph.D."
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+slide-number: true
+code-link: true
+fig-responsive: true
+footnotes-hover: true
+bibliography: bibliography.bib
+title-slide-attributes:
+  data-background-image: images/overview_cedricscherer.png
+  data-background-size: contain
+  data-background-opacity: "0.15"
+format: 
+  revealjs:
+    theme: default
+    transition: fade
+    transition-speed: fast
+    incremental: true
+    toc: true
+    toc-title: "Roadmap"
+    toc-depth: 1
+    code-overflow: wrap
+    code-block-bg: true
+    code-line-numbers: true
+    highlight-style: a11y
+    chalkboard: true
+---
+
+## Acknowledgements
+
+The following has been heavily inspired by the amazing [Allison Horst](https://twitter.com/allison_horst), and especially this lecture: [Advanced Data Visualization in ggplot2](https://allisonhorst.github.io/rice-data-viz).
+
+![Her awesome lectures (& illustrations) cover lots of topic beyond `ggplot2`. Check her out!](images/allison_horst.jpg){width=75%}
+
+
+# Introduction
+
+## What is the grammar of graphics? {background-image="https://media.snl.no/media/64089/standard_muser_4.jpg" background-opacity=0.10 background-size=contain background-repeat=no-repeat}
+
+:::{.r-stack}
+:::{.fragment .fade-in-then-out}
+:::{.callout-note}
+## Grammar
+
+from ancient Greek **_γράμμα_**, _letter_. It is a set of rules to combine words and compose statements that make sense in a language
+:::
+:::
+
+:::{.fragment .fade-in}
+:::{.callout-note}
+## Grammar of Graphics
+
+A set of rules that, combined, allows us to combine independent components (_layers_) to build meaningful graphics and answer research questions 
+:::
+:::
+:::
+
+:::{.fragment .fade-in}
+:::{.callout-tip}
+## Fun fact
+
+In Ancient Greek, the word "grammar" has the same root as **_γραφή_**, which means _to draw_ or _to paint_ or _to write_
+:::
+:::
+
+::: footer
+The nine muses, image by [Marie-Lan Nguyen](https://commons.wikimedia.org/wiki/User:Jastrow), [Public domain](https://creativecommons.org/publicdomain/mark/1.0/deed.en)
+:::
+
+##
+
+![Sometimes, grammar can mean all three things: write, draw, paint. For instance, in the calligraphic monogram---or _tughra_---of Ottoman Sultan Suleiman I the Magnificent (1494--1566).](images/Tughra_Suleiman.jpeg){fig-align="center"}
+
+## Words of wisdom
+
+:::{.callout-warning}
+The grammar of graphics **does not** tell you which graphic to use. You still need to choose what to plot, based on:
+
+* your question
+* your data
+* your knowledge of the grammar
+
+:::
+
+## ggplot2: quick facts {.incremental .smaller background-image="https://ggplot2.tidyverse.org/logo.png" background-size="200px" background-opacity=0.25}
+
+* Who?
+  + [Hadley Wickham](https://github.com/hadley), Chief Scientist at RStudio, Inc.
+  ![](images/hadleywickham.png){width=65% fig-align="center"}
+* What?
+  + ggplot2 [@Wickham2010], brings the Grammar of Graphics [@Wilkinson2012] into R
+* Why?
+  + to establish a _framework_ for graphics in R that allows for easy editing and extension
+
+## Elements of a ggplot {.smaller .incremental}
+
+:::{.fragment}
+I tend to think of these as the **core** ones
+
+* Data 
+* Geometries 
+* Aesthetics
+* Scales
+* Facets
+* Themes
+:::
+
+:::{.fragment .fade-in}
+Other, **additional** elements are:
+
+* Statistical transformations
+* Coordinates
+:::
+
+:::{.fragment .fade-in}
+Though I personally use them **much less often** that the others
+:::
+
+## R setup
+
+```{r}
+#| echo: true
+#| output: false
+
+# The essentials
+library(tidyverse) # the R version of a rabbit hole
+
+# Data to play with 
+library(palmerpenguins) # an alternative to good ol' iris dataset
+
+# Complexifying our plots
+library(patchwork) # when faceting just isn't enough
+library(ggpol) # no such thing as too many geoms!
+library(ggExtra) # add marginal boxplots and other ggplot2 enhancements
+```
+
+## An example
+
+:::{.r-stack}
+:::{.fragment .fade-in-then-out}
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-dpi: 300
+#| fig-align: center
+#| fig-asp: 0.7
+#| fig-alt: "A box-and-whiskers plot of flipper length in millimeters by penguin species."
+#| fig-cap: "A box-and-whiskers plot of flipper length (mm) across three penguin species in base R. Data from @penguins2020."
+#| layout-valign: center
+
+boxplot(flipper_length_mm~species, data=penguins, ylab="Flipper length (mm)", xlab="Species")
+stripchart(flipper_length_mm~species, vertical = TRUE, data=penguins, 
+    method = "jitter", add = TRUE, pch = 20)
+```
+:::
+
+:::{.fragment .fade-in-then-out}
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-dpi: 300
+#| fig-align: center
+#| fig-asp: 0.7
+#| fig-alt: "A box-and-whiskers plot of flipper length in millimeters by penguin species."
+#| fig-cap: "A box-and-whiskers plot of flipper length (mm) across three penguin species in ggplot2. Data from @penguins2020."
+#| layout-valign: center
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxplot() +
+  geom_jitter()
+```
+:::
+
+:::{.fragment .fade-in}
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-dpi: 300
+#| fig-align: center
+#| fig-asp: 0.7
+#| fig-alt: "A box-and-whiskers plot of flipper length in millimeters by penguin species."
+#| fig-cap: "A customized box-and-whiskers plot of flipper length (mm) across three penguin species in ggplot2. Data from @penguins2020."
+#| layout-valign: center
+
+pp_boxplot <- ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxplot(aes(color = species), 
+               width = 0.3, 
+               show.legend = FALSE) +
+  geom_jitter(aes(color = species,
+                  shape = species), 
+              alpha = 0.5,  
+              position = position_jitter(width = 0.2, 
+                                         seed = 0)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4"), name = "Species") +
+  labs(x = "Species",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species") + 
+  theme_classic() +
+  theme(text = element_text(size = 18),
+        axis.title = element_text(face = "bold"),
+        legend.title = element_text(face = "bold"),
+        legend.position = "bottom") 
+
+pp_boxplot
+```
+:::
+:::
+
+# Basics
+
+## What are we plotting?
+
+![Artwork by [Allison Horst](https://twitter.com/allison_horst). An extended tutorial on using this dataset with ggplot2 is available [here](https://allisonhorst.github.io/palmerpenguins/articles/examples.html)](images/penguins.png)
+
+##
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-dpi: 300
+#| fig-align: center
+#| fig-asp: 0.7
+#| fig-alt: "A box-and-whiskers plot of flipper length in millimeters by penguin species."
+#| layout-valign: center
+
+pp_boxplot
+```
+
+## The bare necessities {auto-animate="true" .smaller}
+
+```{r}
+#| echo: true
+#| fig-height: 4
+#| fig-asp: 0.7
+#| fig-align: center
+#| fig-alt: "A basic box-plot with no aesthetic modification."
+#| fig-cap: "Essentials of a plot: **data** and **geoms**. Note that this geometry tells us a lot about the data already."
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxplot() 
+```
+
+## Show me the data! {auto-animate="true" .smaller}
+
+```{r}
+#| echo: true
+#| fig-height: 4
+#| fig-asp: 0.7
+#| fig-align: center
+#| fig-cap: "Now with 100% more jitter"
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxplot() +
+  geom_jitter()
+```
+## Adding color---1 {auto-animate="true" .smaller}
+
+```{r}
+#| echo: true
+#| fig-height: 4
+#| fig-asp: 0.7
+#| fig-align: center
+#| fig-cap: "From the top, for a unified feel"
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm,
+           col = species)) + 
+  geom_boxplot() +
+  geom_jitter()
+```
+
+## Adding color---2 {auto-animate="true" .smaller}
+
+```{r}
+#| echo: true
+#| fig-height: 4
+#| fig-asp: 0.7
+#| fig-align: center
+#| fig-cap: "Or for each geom, for more control"
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxplot(aes(col = species)) +
+  geom_jitter(aes(color = species,
+                  shape = species))
+```
+
+## Spruce it up {auto-animate="true" .smaller}
+
+```{r}
+#| echo: true
+#| fig-height: 4
+#| fig-asp: 0.7
+#| fig-align: center
+#| fig-cap: "More **aesthetics**: narrower boxes, a hidden legend, and see-through jitter"
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxplot(aes(col = species), 
+               width = 0.3) +
+  geom_jitter(aes(color = species,
+                  shape = species), 
+              alpha = 0.5, 
+              position = position_jitter(width = 0.2, 
+                                         seed = 0))
+```
+
+## The final touches {auto-animate="true" .smaller}
+
+```{r}
+#| echo: true
+#| fig-height: 4
+#| fig-asp: 0.7
+#| fig-align: center
+#| fig-cap: "Polishing, with **scales**, **labs**, and **themes**"
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxplot(aes(col = species), 
+               width = 0.3, 
+               show.legend = FALSE) +
+  geom_jitter(aes(color = species,
+                  shape = species), 
+              alpha = 0.5, 
+              show.legend = FALSE, 
+              position = position_jitter(width = 0.2, 
+                                         seed = 0)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Species",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species") + 
+  theme_classic()
+```
+
+## Everybody loves facets---1 {auto-animate="true" .smaller}
+
+```{r}
+#| echo: true
+#| fig-height: 4
+#| fig-asp: 0.7
+#| fig-align: center
+#| fig-cap: "Finally, one-variable **faceting**: one facet per sampling location"
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxplot(aes(col = species), 
+               width = 0.3, 
+               show.legend = FALSE) +
+  geom_jitter(aes(color = species,
+                  shape = species),  
+              alpha = 0.5, 
+              show.legend = FALSE, 
+              position = position_jitter(width = 0.2, 
+                                         seed = 0)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Species",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species") +  
+  facet_wrap(.~island, scales = "free") +
+  theme_classic()
+```
+
+## Everybody loves facets---2 {auto-animate="true" .smaller}
+
+```{r}
+#| echo: true
+#| fig-height: 4
+#| fig-asp: 0.7
+#| fig-align: center
+#| fig-cap: "Or, two-variable **faceting**"
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxplot(aes(col = species), 
+               width = 0.3, 
+               show.legend = FALSE) +
+  geom_jitter(aes(color = species,
+                  shape = species),  
+              alpha = 0.5, 
+              show.legend = FALSE, 
+              position = position_jitter(width = 0.2, 
+                                         seed = 0)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Species",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species") + 
+  facet_grid(year~island, scales = "free") +
+  theme_classic()
+```
+##
+
+:::{.callout-caution}
+## Was that last one a meaningful plot?
+:::
+
+. . . 
+
+![](images/point-of-view-star-wars.gif ){width=110% fig-align="center"}
+
+
+## Communicating your plot
+
+Should I need to save my masterpiece, I can either
+
+* export it
+* write in [Rmarkdown](https://github.com/matteorizzuto/rmarkdowntour) and don't bother with exporting `r emo::ji("smiley")`
+
+. . . 
+
+Exporting `ggplot2` objects is fairly simple, just use
+
+```{r}
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|2|3|5"
+
+ggsave(
+  last_plot(), 
+  filename = "../Results/penguins_boxplot.pdf", 
+  dpi = 300, 
+  device = "pdf", 
+  height = 6, 
+  width = 4)
+```
+
+. . . 
+
+I normally export to vector graphics, such as PDF, as they are more versatile and impervious to distortion or quality loss
+
+# Beyond Basics
+
+![Artwork by  [Allison Horst](https://twitter.com/allison_horst)](images/ggplot2_masterpiece.png){fig-align="center"}
+
+## Explore geoms! {.smaller}
+
+One of `ggplot2`'s strengths is that it is easy to extend and build upon it. For instance, to create extra **geoms**.
+
+. . . 
+
+One of my favorite packages to add geoms is `ggpol`, which introduces the amazing `geom_boxjitter()`. 
+
+```{r}
+#| echo: true
+#| output-location: slide
+#| fig-align: center
+#| fig-cap: "A half-and-half box-plot. Note that outliers are now shown in the jitter with a different shape, not in line with the whiskers."
+
+ggplot(data = penguins,
+       aes(x = species, 
+           y = flipper_length_mm)) + 
+  geom_boxjitter(aes(col = species), 
+              alpha = 0.5, 
+              outlier.shape = 17,
+              outlier.size = 3,
+              jitter.size = 3,
+              outlier.intersect = TRUE,
+              show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Species",
+       y = "Flipper length (mm)") + 
+  theme_classic()
+```
+
+## More on Scales {.smaller}
+
+:::{.fragment .fade-in}
+`scales_` functions allow for editing much more than just the color of data points in the graph
+:::
+
+## 
+
+```{r}
+#| echo: true
+#| fig-height: 7
+#| fig-asp: 0.7
+#| output: true
+#| output-location: slide
+#| code-line-numbers: "|4|5-6|9-11"
+#| fig-align: center
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", 
+              se = FALSE, 
+              aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme() +
+  theme_classic()
+```
+
+## {.smaller}
+
+```{r}
+#| echo: true
+#| fig-height: 7
+#| fig-asp: 0.7
+#| output: true
+#| output-location: slide
+#| code-line-numbers: "|11-14"
+#| fig-align: center
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  scale_x_continuous(breaks = c(30, 40, 50, 60), 
+                     limits = c(30, 60)) +
+  scale_y_continuous(breaks = seq(from = 12, to = 22, by = 2), 
+                     limits = c(12, 22)) +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme() +
+  theme_classic()
+```
+
+## More on Scales {.smaller}
+
+`scales_` functions are useful to:
+
+* transform axes, e.g., `scale_x_log10()` or `scale_y_sqrt()`
+* format axes, e.g., `scale_x_date()` or `scale_y_discrete()`
+* play with colors, e.g., `scale_color_manual()` or `scale_fill_continuous()`
+  + there is a **TON** of packages out there to increase the coloring options of base `ggplot2`, mostly working with palettes
+
+. . . 
+
+:::{layout="[1,1,1]" layout-valign="center"}
+
+![](images/rcolorbrewer.jpg){width=105%} 
+
+![](images/MetBrewerHex.jpeg){width=80%} 
+
+![](images/paletteerlogo.png){width=105%}
+:::
+
+## Theming {.smaller}
+
+`theme` is the function to call to edit elements of your plot that don't relate to the data points or their appearance
+
+* axes tick marks, labels, titles, format,  presence/absence, ...
+* legend position, format, ...
+* plotting area background, grid, ...
+* plot title, subtitle, aspect ratio, ...
+
+. . . 
+
+Just as with color palettes, there's a **TON** of themes out there---even an Excel-inspired one! 
+
+![](images/excel1-1.png){height=75% fig-align="center"}
+
+## Theming
+
+Sometimes, you just know which theme---custom-built or premade---you like. 
+
+|
+|
+
+In that case, you can use
+
+```{r}
+#| echo: true
+#| eval: false
+
+ggplot2::theme_set(ggplot2::theme_classic())
+```
+|
+|
+at the start of your script/notebook to save yourself the hustle of an extra line of code in each plot `r emo::ji("smiley")`
+
+## Words of wisdom
+
+:::{.callout-tip}
+Calling a preset **theme** does not preclude further modifications using the general `theme` function
+:::
+
+. . . 
+
+:::{.callout-warning}
+Order still matters
+:::
+
+##
+
+```{r}
+#| echo: true
+#| fig-height: 7
+#| fig-asp: 0.7
+#| output: true
+#| output-location: slide
+#| code-line-numbers: "|15-16"
+#| fig-align: center
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme_classic()
+```
+
+## {auto-animate="true"}
+
+```{r}
+#| echo: true
+#| fig-height: 7
+#| fig-asp: 0.7
+#| output: true
+#| output-location: slide
+#| code-line-numbers: "|16-19" 
+#| fig-align: center
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme_classic() +
+  theme(text = element_text(size = 18),
+        axis.title = element_text(face = "bold"),
+        legend.title = element_text(face = "bold"),
+        legend.position = "bottom") 
+```
+
+## Order matters
+
+```{r}
+#| echo: true
+#| output: true
+#| output-location: slide
+#| code-line-numbers: "|15-18|19" 
+#| fig-align: center
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(text = element_text(size = 18),
+        axis.title = element_text(face = "bold"),
+        legend.title = element_text(face = "bold"),
+        legend.position = "bottom") +
+  theme_classic()
+```
+
+
+## Complexify your plots! 
+
+Hadley Wickam has some very strong opinions about what a graphic should look like
+
+. . .
+
+Sometimes, these are in conflict with the way people would like to present their data or with what they consider _meaningful_
+
+. . . 
+
+Which takes us to **extensions** of `ggplot2` and how to make your plots more complex 
+
+. . . 
+
+(but very briefly)
+
+## {auto-animate="true"}
+
+```{r}
+#| echo: false
+#| fig-height: 7
+#| fig-asp: 0.7
+#| output: true
+#| output-location: slide
+#| fig-align: center
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme_classic() +
+  theme(text = element_text(size = 18),
+        axis.title = element_text(face = "bold"),
+        legend.title = element_text(face = "bold"),
+        legend.position = "bottom") 
+```
+
+## {auto-animate="true"}
+
+```{r}
+#| echo: true
+#| fig-cap: "How about this? Marginal boxplots to the side of a scatterplot with regression lines, all codified by species."
+#| fig-height: 7
+#| fig-asp: 0.7
+#| output: true
+#| output-location: slide
+#| fig-align: center
+#| code-line-numbers: "|21"
+pp_scatter <- ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Species",
+       shape = "Species") +
+  theme_classic() +
+  theme(text = element_text(size = 18),
+        axis.title = element_text(face = "bold"),
+        legend.title = element_text(face = "bold"),
+        legend.position = "bottom")
+
+pp_scatter2 <- ggMarginal(pp_scatter, type = "boxplot", groupColour = TRUE)
+
+pp_scatter2
+```
+
+# Facet alternatives
+
+Sooner or later we all get to that moment...
+
+. . . 
+
+How do I put together in one multi-panel figure the _n_ plots I just created?
+
+. . .
+
+Never fear, `patchwork` is here! 
+
+## Simple, clean, fast {auto-animate="true"}
+
+```{r}
+#| echo: true
+#| output-location: slide
+#| code-line-numbers: "|1|2|3|4|5"
+#| fig-align: center
+pp_boxplot + 
+  pp_scatter + 
+  plot_layout(ncol = 2, nrow = 1, guides = "collect", widths = c(1, 1)) + 
+  plot_annotation(tag_levels = "a", tag_prefix = "(", tag_suffix = ")") &
+  theme(legend.position = "bottom")
+```
+
+## In conclusion
+|
+|
+|
+:::{.callout-important appearance="simple"}
+It is all about **layers** and **order matters**!
+:::
+
+
+
+# Useful resources
+
+* [from Data to Viz](https://www.data-to-viz.com), a website to help you choose graphs for your data!
+* [Data visualization with ggplot2](https://datacarpentry.org/R-ecology-lesson/04-visualization-ggplot2), an online free lecture from The Carpentries
+* [ggplot2's official cheat sheet](https://github.com/rstudio/cheatsheets/blob/main/data-visualization.pdf)
+* [A much more extensive tutorial](https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#ggplot)
+* [Allison Horst's lecture that inspired this one](https://allisonhorst.github.io/rice-data-viz/#52_In_the_weeds_of_themes_(gridlines,_panel_colors))
+* [R for Data Science](https://r4ds.had.co.nz/index.html), Hadley Wickham's book
+
+# References
+
