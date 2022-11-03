@@ -1,6 +1,5 @@
 ---
-title: "ggplot2"
-subtitle: "Navigating the Grammar of Graphics"
+title: "Grammar of Graphics: ggplot2"
 author: "Matteo Rizzuto, Ph.D."
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 slide-number: true
@@ -38,30 +37,24 @@ The following has been heavily inspired by the amazing [Allison Horst](https://t
 # Introduction
 
 ## What is the grammar of graphics? {background-image="https://media.snl.no/media/64089/standard_muser_4.jpg" background-opacity=0.10 background-size=contain background-repeat=no-repeat}
-
-:::{.r-stack}
-:::{.fragment .fade-in-then-out}
+|
+|
+|
 :::{.callout-note}
-## Grammar
+## Etymology
 
-from ancient Greek **_γράμμα_**, _letter_. It is a set of rules to combine words and compose statements that make sense in a language
-:::
-:::
+Both _grammar_ and _graphics_ come from Ancient Greek words:
 
-:::{.fragment .fade-in}
-:::{.callout-note}
-## Grammar of Graphics
-
-A set of rules that, combined, allows us to combine independent components (_layers_) to build meaningful graphics and answer research questions 
+* **_γράμμα_**, which literally translates to _letter_
+* **_γραφικός_**, translating as _something pertaining to writing and drawing_
 :::
-:::
-:::
-
+|
+|
 :::{.fragment .fade-in}
 :::{.callout-tip}
 ## Fun fact
 
-In Ancient Greek, the word "grammar" has the same root as **_γραφή_**, which means _to draw_ or _to paint_ or _to write_
+They share the same root as **_γραφή_**, which means _to draw_ or _to paint_ or _to write_
 :::
 :::
 
@@ -69,12 +62,48 @@ In Ancient Greek, the word "grammar" has the same root as **_γραφή_**, whic
 The nine muses, image by [Marie-Lan Nguyen](https://commons.wikimedia.org/wiki/User:Jastrow), [Public domain](https://creativecommons.org/publicdomain/mark/1.0/deed.en)
 :::
 
-##
+## What is the grammar of graphics? {background-image="https://media.snl.no/media/64089/standard_muser_4.jpg" background-opacity=0.10 background-size=contain background-repeat=no-repeat}
+|
+|
+|
+:::{.callout-note}
+## Meaning
 
-![Sometimes, grammar can mean all three things: write, draw, paint. For instance, in the calligraphic monogram---or _tughra_---of Ottoman Sultan Suleiman I the Magnificent (1494--1566).](images/Tughra_Suleiman.jpeg){fig-align="center"}
+* **Grammar** is generally intended as a set of rules to combine words into lawful statements in a language
+* **Graphics** are visual images or designs drawn on a surface, which can functional or (and?) artistic
+:::
+
+::: footer
+The nine muses, image by [Marie-Lan Nguyen](https://commons.wikimedia.org/wiki/User:Jastrow), [Public domain](https://creativecommons.org/publicdomain/mark/1.0/deed.en)
+:::
+
+
+## What is the grammar of graphics? {background-image="https://media.snl.no/media/64089/standard_muser_4.jpg" background-opacity=0.10 background-size=contain background-repeat=no-repeat}
+|
+|
+|
+|
+:::{.callout-important}
+## Grammar of Graphics
+
+A set of rules that allows us to combine independent components (_layers_) into meaningful graphics, to answer research questions 
+:::
+
+::: footer
+The nine muses, image by [Marie-Lan Nguyen](https://commons.wikimedia.org/wiki/User:Jastrow), [Public domain](https://creativecommons.org/publicdomain/mark/1.0/deed.en)
+:::
+
+## {.smaller}
+
+Sometimes, the three meanings of **_γραφή_** are interwoven together in a single object 
+
+. . . 
+
+![The calligraphic monogram---or _tughra_---of Ottoman Sultan Suleiman I the Magnificent (1494--1566). [From the Metropolitan Museum of Art via Wikimedia Commons](https://www.metmuseum.org/art/collection/search/449533)](images/Tughra_Suleiman.jpeg){width=60% fig-align="center"}
 
 ## Words of wisdom
-
+|
+|
 :::{.callout-warning}
 The grammar of graphics **does not** tell you which graphic to use. You still need to choose what to plot, based on:
 
@@ -84,7 +113,7 @@ The grammar of graphics **does not** tell you which graphic to use. You still ne
 
 :::
 
-## ggplot2: quick facts {.incremental .smaller background-image="https://ggplot2.tidyverse.org/logo.png" background-size="200px" background-opacity=0.25}
+## ggplot2: quick facts {.incremental .smaller background-image="https://ggplot2.tidyverse.org/logo.png" background-size="25%" background-opacity=0.25}
 
 * Who?
   + [Hadley Wickham](https://github.com/hadley), Chief Scientist at RStudio, Inc.
@@ -237,12 +266,11 @@ pp_boxplot
 
 ```{r}
 #| echo: true
-#| fig-height: 4
-#| fig-asp: 0.7
+#| output-location: slide
 #| fig-align: center
 #| fig-alt: "A basic box-plot with no aesthetic modification."
 #| fig-cap: "Essentials of a plot: **data** and **geoms**. Note that this geometry tells us a lot about the data already."
-
+#| layout-valign: center
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
@@ -253,11 +281,11 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 4
-#| fig-asp: 0.7
+#| output-location: slide
 #| fig-align: center
 #| fig-cap: "Now with 100% more jitter"
-
+#| layout-valign: center
+#| code-line-numbers: "|5"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
@@ -268,11 +296,11 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 4
-#| fig-asp: 0.7
+#| output-location: slide
 #| fig-align: center
 #| fig-cap: "From the top, for a unified feel"
-
+#| layout-valign: center
+#| code-line-numbers: "|4"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm,
@@ -285,11 +313,11 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 4
-#| fig-asp: 0.7
+#| output-location: slide
 #| fig-align: center
 #| fig-cap: "Or for each geom, for more control"
-
+#| layout-valign: center
+#| code-line-numbers: "|4-6"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
@@ -302,11 +330,11 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 4
-#| fig-asp: 0.7
+#| output-location: slide
 #| fig-align: center
 #| fig-cap: "More **aesthetics**: narrower boxes, a hidden legend, and see-through jitter"
-
+#| layout-valign: center
+#| code-line-numbers: "|5|8-10"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
@@ -323,11 +351,11 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 4
-#| fig-asp: 0.7
+#| output-location: slide
 #| fig-align: center
 #| fig-cap: "Polishing, with **scales**, **labs**, and **themes**"
-
+#| layout-valign: center
+#| code-line-numbers: "|6|10|13-18"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
@@ -352,11 +380,11 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 4
-#| fig-asp: 0.7
+#| output-location: slide
 #| fig-align: center
 #| fig-cap: "Finally, one-variable **faceting**: one facet per sampling location"
-
+#| layout-valign: center
+#| code-line-numbers: "|18"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
@@ -382,11 +410,11 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 4
-#| fig-asp: 0.7
+#| output-location: slide
 #| fig-align: center
 #| fig-cap: "Or, two-variable **faceting**"
-
+#| layout-valign: center
+#| code-line-numbers: "|18"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
@@ -464,7 +492,7 @@ One of my favorite packages to add geoms is `ggpol`, which introduces the amazin
 #| output-location: slide
 #| fig-align: center
 #| fig-cap: "A half-and-half box-plot. Note that outliers are now shown in the jitter with a different shape, not in line with the whiskers."
-
+#| code-line-numbers: "|4-10"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
@@ -487,7 +515,7 @@ ggplot(data = penguins,
 `scales_` functions allow for editing much more than just the color of data points in the graph
 :::
 
-## 
+## Scales in action {.smaller}
 
 ```{r}
 #| echo: true
@@ -517,7 +545,7 @@ ggplot(data = penguins,
   theme_classic()
 ```
 
-## {.smaller}
+## Scales in action {.smaller}
 
 ```{r}
 #| echo: true
@@ -677,6 +705,8 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
+#| fig-height: 7
+#| fig-asp: 0.7
 #| output: true
 #| output-location: slide
 #| code-line-numbers: "|15-18|19" 
