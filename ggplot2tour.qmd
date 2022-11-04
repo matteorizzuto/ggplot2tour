@@ -6,7 +6,7 @@ slide-number: true
 code-link: true
 fig-responsive: true
 footnotes-hover: true
-bibliography: bibliography.bib
+bibliography: ggplot2tour.bib
 title-slide-attributes:
   data-background-image: images/overview_cedricscherer.png
   data-background-size: contain
