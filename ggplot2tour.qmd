@@ -24,7 +24,6 @@ format:
     code-block-bg: true
     code-line-numbers: true
     highlight-style: a11y
-    chalkboard: true
 ---
 
 ## Acknowledgements
@@ -70,7 +69,7 @@ The nine muses, image by [Marie-Lan Nguyen](https://commons.wikimedia.org/wiki/U
 ## Meaning
 
 * **Grammar** is generally intended as a set of rules to combine words into lawful statements in a language
-* **Graphics** are visual images or designs drawn on a surface, which can functional or (and?) artistic
+* **Graphics** are visual images or designs drawn on a surface, which can be functional or (and?) artistic
 :::
 
 ::: footer
@@ -162,7 +161,7 @@ library(palmerpenguins) # an alternative to good ol' iris dataset
 # Complexifying our plots
 library(patchwork) # when faceting just isn't enough
 library(ggpol) # no such thing as too many geoms!
-library(ggExtra) # add marginal boxplots and other ggplot2 enhancements
+library(ggExtra) # for that extra touch
 ```
 
 ## An example
@@ -262,7 +261,7 @@ pp_boxplot
 pp_boxplot
 ```
 
-## The bare necessities {auto-animate="true" .smaller}
+## The bare necessities {.smaller}
 
 ```{r}
 #| echo: true
@@ -277,7 +276,23 @@ ggplot(data = penguins,
   geom_boxplot() 
 ```
 
-## Show me the data! {auto-animate="true" .smaller}
+## First things first {.smaller}
+
+* One function call sets the stage, `ggplot()`
+  + `geom_`, `scale_`, `theme_`, `labs`, `stat_`, `coords_`, and `facet_` functions all add **layers** to it
+* **Order matters**
+  + the order in which you add layers to the plot **is** the order in which they appear in the graph
+  + "lower" functions draw layers on the plot **after** "higher" ones 
+  + **What You See Is What You Get**
+* About the `+` operator
+  + **not a pipe**
+  + but can be part of one
+
+. . . 
+
+Ok, moving on
+
+## Show me the data! {.smaller}
 
 ```{r}
 #| echo: true
@@ -292,7 +307,8 @@ ggplot(data = penguins,
   geom_boxplot() +
   geom_jitter()
 ```
-## Adding color---1 {auto-animate="true" .smaller}
+
+## Adding color---1 {.smaller}
 
 ```{r}
 #| echo: true
@@ -309,7 +325,7 @@ ggplot(data = penguins,
   geom_jitter()
 ```
 
-## Adding color---2 {auto-animate="true" .smaller}
+## Adding color---2 {.smaller}
 
 ```{r}
 #| echo: true
@@ -317,16 +333,15 @@ ggplot(data = penguins,
 #| fig-align: center
 #| fig-cap: "Or for each geom, for more control"
 #| layout-valign: center
-#| code-line-numbers: "|4-6"
+#| code-line-numbers: "|4-5"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
   geom_boxplot(aes(col = species)) +
-  geom_jitter(aes(color = species,
-                  shape = species))
+  geom_jitter(aes(color = species))
 ```
 
-## Spruce it up {auto-animate="true" .smaller}
+## Spruce it up {.smaller}
 
 ```{r}
 #| echo: true
@@ -334,7 +349,7 @@ ggplot(data = penguins,
 #| fig-align: center
 #| fig-cap: "More **aesthetics**: narrower boxes, a hidden legend, and see-through jitter"
 #| layout-valign: center
-#| code-line-numbers: "|5|8-10"
+#| code-line-numbers: "|5|7-10"
 ggplot(data = penguins,
        aes(x = species, 
            y = flipper_length_mm)) + 
@@ -347,7 +362,7 @@ ggplot(data = penguins,
                                          seed = 0))
 ```
 
-## The final touches {auto-animate="true" .smaller}
+## The final touches {.smaller}
 
 ```{r}
 #| echo: true
@@ -376,7 +391,7 @@ ggplot(data = penguins,
   theme_classic()
 ```
 
-## Everybody loves facets---1 {auto-animate="true" .smaller}
+## Everybody loves facets---1 {.smaller}
 
 ```{r}
 #| echo: true
@@ -406,7 +421,7 @@ ggplot(data = penguins,
   theme_classic()
 ```
 
-## Everybody loves facets---2 {auto-animate="true" .smaller}
+## Everybody loves facets---2 {.smaller}
 
 ```{r}
 #| echo: true
@@ -446,7 +461,7 @@ ggplot(data = penguins,
 ![](images/point-of-view-star-wars.gif ){width=110% fig-align="center"}
 
 
-## Communicating your plot
+## Exporting {.smaller}
 
 Should I need to save my masterpiece, I can either
 
@@ -519,8 +534,8 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 7
-#| fig-asp: 0.7
+#| fig-height: 5
+#| fig-width: 6 
 #| output: true
 #| output-location: slide
 #| code-line-numbers: "|4|5-6|9-11"
@@ -549,8 +564,8 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 7
-#| fig-asp: 0.7
+#| fig-height: 5
+#| fig-width: 6 
 #| output: true
 #| output-location: slide
 #| code-line-numbers: "|11-14"
@@ -584,22 +599,21 @@ ggplot(data = penguins,
 * transform axes, e.g., `scale_x_log10()` or `scale_y_sqrt()`
 * format axes, e.g., `scale_x_date()` or `scale_y_discrete()`
 * play with colors, e.g., `scale_color_manual()` or `scale_fill_continuous()`
-  + there is a **TON** of packages out there to increase the coloring options of base `ggplot2`, mostly working with palettes
 
 . . . 
 
 :::{layout="[1,1,1]" layout-valign="center"}
 
-![](images/rcolorbrewer.jpg){width=105%} 
+![](images/rcolorbrewer.jpg)
 
-![](images/MetBrewerHex.jpeg){width=80%} 
+![](images/MetBrewerHex.jpeg){width=50%} 
 
-![](images/paletteerlogo.png){width=105%}
+![](images/paletteerlogo.png)
 :::
 
 ## Theming {.smaller}
 
-`theme` is the function to call to edit elements of your plot that don't relate to the data points or their appearance
+`theme` lets you edit elements of your plot that don't relate to the data points or their appearance
 
 * axes tick marks, labels, titles, format,  presence/absence, ...
 * legend position, format, ...
@@ -634,21 +648,21 @@ at the start of your script/notebook to save yourself the hustle of an extra lin
 ## Words of wisdom
 
 :::{.callout-tip}
-Calling a preset **theme** does not preclude further modifications using the general `theme` function
+Calling a preset **theme** does not prevent further modifications using the general `theme` function
 :::
 
 . . . 
 
 :::{.callout-warning}
-Order still matters
+Order **still** matters
 :::
 
 ##
 
 ```{r}
 #| echo: true
-#| fig-height: 7
-#| fig-asp: 0.7
+#| fig-height: 5
+#| fig-width: 6 
 #| output: true
 #| output-location: slide
 #| code-line-numbers: "|15-16"
@@ -674,8 +688,8 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 7
-#| fig-asp: 0.7
+#| fig-height: 5
+#| fig-width: 6 
 #| output: true
 #| output-location: slide
 #| code-line-numbers: "|16-19" 
@@ -705,8 +719,8 @@ ggplot(data = penguins,
 
 ```{r}
 #| echo: true
-#| fig-height: 7
-#| fig-asp: 0.7
+#| fig-height: 5
+#| fig-width: 6 
 #| output: true
 #| output-location: slide
 #| code-line-numbers: "|15-18|19" 
@@ -733,63 +747,22 @@ ggplot(data = penguins,
 ```
 
 
-## Complexify your plots! 
+## Facet alternatives
 
-Hadley Wickam has some very strong opinions about what a graphic should look like
+Sooner or later we all get to that moment...
+
+. . . 
+
+How do I put together in **one** multi-panel figure the _n_ plots I just created?
 
 . . .
 
-Sometimes, these are in conflict with the way people would like to present their data or with what they consider _meaningful_
+Never fear, `patchwork` is here! 
 
-. . . 
-
-Which takes us to **extensions** of `ggplot2` and how to make your plots more complex 
-
-. . . 
-
-(but very briefly)
-
-## {auto-animate="true"}
+## Simple, clean, fast
 
 ```{r}
 #| echo: false
-#| fig-height: 7
-#| fig-asp: 0.7
-#| output: true
-#| output-location: slide
-#| fig-align: center
-ggplot(data = penguins,
-       aes(x = bill_length_mm,
-           y = bill_depth_mm,
-           group = species)) +
-  geom_point(aes(color = species, 
-                 shape = species),
-             size = 3,
-             alpha = 0.8) +
-  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
-  scale_color_manual(values = c("darkorange","purple","cyan4")) +
-  labs(x = "Bill length (mm)",
-       y = "Bill depth (mm)",
-       color = "Penguin species",
-       shape = "Penguin species") +
-  theme_classic() +
-  theme(text = element_text(size = 18),
-        axis.title = element_text(face = "bold"),
-        legend.title = element_text(face = "bold"),
-        legend.position = "bottom") 
-```
-
-## {auto-animate="true"}
-
-```{r}
-#| echo: true
-#| fig-cap: "How about this? Marginal boxplots to the side of a scatterplot with regression lines, all codified by species."
-#| fig-height: 7
-#| fig-asp: 0.7
-#| output: true
-#| output-location: slide
-#| fig-align: center
-#| code-line-numbers: "|21"
 pp_scatter <- ggplot(data = penguins,
        aes(x = bill_length_mm,
            y = bill_depth_mm,
@@ -809,25 +782,7 @@ pp_scatter <- ggplot(data = penguins,
         axis.title = element_text(face = "bold"),
         legend.title = element_text(face = "bold"),
         legend.position = "bottom")
-
-pp_scatter2 <- ggMarginal(pp_scatter, type = "boxplot", groupColour = TRUE)
-
-pp_scatter2
 ```
-
-# Facet alternatives
-
-Sooner or later we all get to that moment...
-
-. . . 
-
-How do I put together in one multi-panel figure the _n_ plots I just created?
-
-. . .
-
-Never fear, `patchwork` is here! 
-
-## Simple, clean, fast {auto-animate="true"}
 
 ```{r}
 #| echo: true
@@ -849,8 +804,6 @@ pp_boxplot +
 It is all about **layers** and **order matters**!
 :::
 
-
-
 # Useful resources
 
 * [from Data to Viz](https://www.data-to-viz.com), a website to help you choose graphs for your data!
@@ -859,6 +812,42 @@ It is all about **layers** and **order matters**!
 * [A much more extensive tutorial](https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#ggplot)
 * [Allison Horst's lecture that inspired this one](https://allisonhorst.github.io/rice-data-viz/#52_In_the_weeds_of_themes_(gridlines,_panel_colors))
 * [R for Data Science](https://r4ds.had.co.nz/index.html), Hadley Wickham's book
+
+## Thank you!
+|
+|
+|
+|
+|
+Questions?
+
+## Complexify your plots!  {.smaller}
+
+One of the strengths of `ggplot2` is that it is easy to **expand** upon
+
+. . . 
+
+Let's talk about some of `ggplot2`'s extension and what they allow you to do
+
+. . . 
+
+(but very briefly)
+
+## {.smaller}
+
+```{r}
+#| echo: true
+#| fig-cap: "How about this? Marginal boxplots to the side of a scatterplot with regression lines, all codified by species."
+#| fig-height: 5
+#| fig-width: 6 
+#| output: true
+#| output-location: slide
+#| fig-align: center
+#| code-line-numbers: "|21"
+pp_scatter2 <- ggMarginal(pp_scatter, type = "boxplot", groupColour = TRUE)
+
+pp_scatter2
+```
 
 # References
 
